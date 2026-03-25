@@ -8,12 +8,12 @@ variable "environment" {
 }
 
 variable "component" {
-   type = "string"
+   type = string
 }
 
 
 variable "app_version" {
-  type = "string"
+  type = string
   default = "v3" 
 }
 
