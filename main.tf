@@ -1,7 +1,7 @@
 resource "aws_instance" "main" {
   ami           = local.ami_id
   instance_type = "t3.micro"
-  subnet_id = local.private_subnet_ids
+  subnet_id = local.private_subnet_id
   vpc_security_group_ids = [local.sg_id]
 
   tags = merge(
@@ -135,7 +135,7 @@ resource "aws_autoscaling_group" "main" {
     id      = aws_launch_template.main .id
     version = "$Latest"
   }
-  vpc_zone_identifier       = [local.private_subnet_ids]
+  vpc_zone_identifier       = [local.private_subnet_id]
   target_group_arns = [aws_lb_target_group.main.arn]
 
   instance_refresh {
@@ -186,7 +186,7 @@ resource "aws_autoscaling_policy" "main" {
 #if frontend it should give like frontend-dev-devopspractice08.online else 
 # component.backend_alb-devopspractice08.online
 resource "aws_lb_listener_rule" "main" {
-  listener_arn = local.alb_listner_arn
+  listener_arn = local.alb_listener_arn
   priority     = var.rule_priority
 
   action {
