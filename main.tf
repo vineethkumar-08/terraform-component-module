@@ -32,7 +32,7 @@ resource "terraform_data" "main" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh main ${var.component} ${var.environment} ${var.app_version}"
+        "sudo sh /tmp/bootstrap.sh  ${var.component} ${var.environment} ${var.app_version}"
     ]
   }
 }
@@ -59,11 +59,12 @@ resource "aws_ami_from_instance" "main" {
 }
 
 resource "aws_lb_target_group" "main" {
-  name     = "${var.project}-${var.environment}-main"
+  name     = "${var.project}-${var.environment}-${var.component}"
   port     = local.port_number
   protocol = "HTTP"
   vpc_id   = local.vpc_id
   deregistration_delay  = 60
+
   health_check {
     healthy_threshold = 2
     interval = 10
@@ -79,7 +80,7 @@ resource "aws_lb_target_group" "main" {
 
 
 resource "aws_launch_template" "main" {
-  name = "${var.project}-${var.environment}-main" 
+  name = "${var.project}-${var.environment}-${var.component}" 
   image_id = aws_ami_from_instance.main.id
 
  # once autoscaling see less traffic. it will terminate the instances
@@ -95,7 +96,7 @@ resource "aws_launch_template" "main" {
     # tags for instance create by launch template through auto scaling
     tags = merge(
     {
-        Name = "${var.project}-${var.environment}-main"
+        Name = "${var.project}-${var.environment}-${var.component}"
     },
     local.common_tags
   )
@@ -107,7 +108,7 @@ resource "aws_launch_template" "main" {
 
     tags = merge(
     {
-        Name = "${var.project}-${var.environment}-main"
+        Name = "${var.project}-${var.environment}-${var.component}"
     },
     local.common_tags
   )
@@ -115,7 +116,7 @@ resource "aws_launch_template" "main" {
    # tags for launch templete
     tags = merge(
     {
-        Name = "${var.project}-${var.environment}-main"
+        Name = "${var.project}-${var.environment}-${var.component}"
     },
     local.common_tags 
     )
